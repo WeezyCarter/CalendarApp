@@ -1,0 +1,74 @@
+﻿@model CalendarViewModel
+
+@{
+    int year = Model.CurrentYear;
+    int month = Model.CurrentMonth;
+    DateTime firstDayOfMonth = new DateTime(year, month, 1);
+    int daysInMonth = DateTime.DaysInMonth(year, month);
+    int offsetDays = (int)firstDayOfMonth.DayOfWeek;
+}
+
+<!-- Your calendar HTML and navigation links here -->
+<style>
+    body {
+        background-color: black;
+        color: white;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        width: calc(100% / 7);
+        height: 100px;
+        border: 1px solid white; /* Add white borders */
+        text-align: center;
+    }
+</style>
+
+<div style="text-align: center;">
+    <h2>@firstDayOfMonth.ToString("MMMM yyyy")</h2>
+
+    <div>
+        <a asp-controller="Calendar" asp-action="Index" asp-route-year="@Model.PreviousYear" asp-route-month="@Model.PreviousMonth">Previous Month</a>
+        <span> | </span>
+        <a asp-controller="Calendar" asp-action="Index" asp-route-year="@Model.NextYear" asp-route-month="@Model.NextMonth">Next Month</a>
+    </div>
+
+    <div style="overflow-x: auto; height: calc(100vh - 200px);"> <!-- Adjust height as needed -->
+        <table>
+            <tr>
+                <th>Sun</th>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+            </tr>
+
+            <tr>
+                @for (int i = 0; i < offsetDays; i++)
+                {
+                    <td></td>
+                }
+
+                @for (int day = 1; day <= daysInMonth; day++)
+                {
+                    <td>@day</td>
+                    if ((day + offsetDays) % 7 == 0)
+                    {
+                        @:</tr><tr>
+                    }
+                }
+
+                @for (int i = (daysInMonth + offsetDays) % 7; i < 7; i++)
+                {
+                    <td></td>
+                }
+            </tr>
+        </table>
+    </div>
+</div>
